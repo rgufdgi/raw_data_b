@@ -82,9 +82,9 @@ def i124(num16, byte):  # перевод для знаковых типов да
         return -int(num2_conv, 2)
 
 
-def floatt(hexx):
+def floatt(hexx, byte):
 
-    num2 = hex_to_binary(hexx)
+    num2 = hex_to_binary(hexx, byte)
     while len(num2) != 32:
         num2 = f'0{num2}'
 
@@ -306,7 +306,7 @@ print(start_time)
         
         
             
-name = 'i0189_03.044'
+name = 'i0136_05.043'
 
 gir_l = []
 rl_l = []
@@ -343,9 +343,19 @@ with open(name, 'rb') as file: #открытие файла, считывани�
 
 # заготовка для мастерных записей (врем. кадры)
 dataset = {'time':[], 'timet':[], 'timel':[], 'sdc':[], 'om': [], 'n_filt': [], 'step':[],  'values':[], 'event_n':[], 'mask':[]}
-filt = []
+filt = [] # не знаю, насколько это нужно. 
 gist_data = {'time':[], 'timel':[], 'timet':[], 'sdc':[], 'hist':[]}
-gir0 = []
+
+#заготовки для остальных записей
+gir0 = {'pConfVersionMinor':[], 'pConfVersionMajor':[], 'pMinorVersion':[], 'pMajorVersion':[], 'NClust':[]}
+gir1 = {'ID':[], 'adress':[], 'stat':[], 'dinam':[]}
+gir4 = {1:[], 2:[], 4:[]}
+gir7rf1 = {'Master':[], 'OM CC':[], 'U+5':[], 'U+12':[], 'U-12':[], 'UH':[], 'Temp':[], 'ErrCnt':[]}
+gir7rf2 = {'Master':[], 'OM CC':[], 'Pulces':[], 'Pulce':[]}
+gir7rf3 = {'Commutator':[], 'ChannelState':[]}
+gir7rf4 = {0:[]}
+gir7rf5 = {'Sensor':[], 'temp_data':[], 'hum_data':[], 'press_data':[], 'accel_data':[], 'mag_data':[]}
+gir3 = {'rf':[], 'rc':[]}
 for i in range(len(rc_l)): #цикл по всем записям
     if gir_l[i] != 6 or rf_l[i] != 0 :  # для не мастерных данных
         formatt = None
@@ -375,7 +385,7 @@ for i in range(len(rc_l)): #цикл по всем записям
         dataset['event_n'].extend(dataset_i['event_n'])
         dataset['mask'].extend(dataset_i['mask'])
         
-    if gir_l[i] == 6 and rf_l[i] == 1:
+    elif gir_l[i] == 6 and rf_l[i] == 1:
 
         gist_data_i = read_rc_gist(rc_l[i], time_l[i])
         
@@ -385,10 +395,213 @@ for i in range(len(rc_l)): #цикл по всем записям
         gist_data['sdc'].extend(gist_data_i['sdc'])
         gist_data['hist'].extend(gist_data_i['hist'])
         
-#    if gir_l[i] == 0:
+    elif gir_l[i] == 0:
+        pConfVersionMinor = u124(rverse(rc_l[i][:8], 4), 4)
+        pConfVersionMajor = u124(rverse(rc_l[i][8:16], 4), 4)
+        pMinorVersion = u124(rverse(rc_l[i][16:24], 4), 4)
+        pMajorVersion  = u124(rverse(rc_l[i][24:32], 4), 4)
+        NClust = i124(rverse(rc_l[i][32:36], 2), 2)
         
-
-
+        gir0['pConfVersionMinor'].append(pConfVersionMinor)
+        gir0['pConfVersionMajor'].append(pConfVersionMajor)
+        gir0['pMinorVersion'].append(pMinorVersion)
+        gir0['pMajorVersion'].append(pMajorVersion)
+        gir0['NClust'].append(NClust)
+        
+    elif gir_l[i] == 1:
+        ID  = i124(rverse(rc_l[i][:8], 4), 4) - 2130640384  # наверное
+        n_elements = i124(rverse(rc_l[i][8:16], 4), 4)
+        n_size = i124(rverse(rc_l[i][16:24], 4), 4)
+        
+        for i in range(n_elements):
+            #адресная часть
+            rc_l[i] = rc_l[i][24:]
+            cluster = i124(rverse(rc_l[i][:4], 2), 2)
+            string = i124(rverse(rc_l[i][4:8], 2), 2)
+            section = i124(rverse(rc_l[i][8:12], 2), 2)
+            rc_l[i] = rc_l[i][12:]
+            #if ID != 16:  # версия 3.9.0(а)
+             #   delimStatic = rverse(rc_l[i][:8], 4)
+              #  rc_l[i][8:]
+            delimStatic = rverse(rc_l[i][:8], 4)
+            rc_l[i][8:]   
+            #if len(rc_l[i]) < 2:
+             #   print('что-то не так')
+              #  continue
+            
+            gir1['ID'].append(ID)
+            gir1['adress'].append([cluster, string, section])
+            # стат. и динам. части в зависимости от ID
+            if ID == 1:
+                stat = rc_l[i][:24]
+                delimDynamic = rverse(rc_l[i][24:32], 4)
+                rc_l[i] = rc_l[i][32:]
+                dinam = rc_l[i][:102]
+            elif ID == 20:
+                stat = rc_l[i][:10]
+                delimDynamic = rverse(rc_l[i][10:18], 4)
+                rc_l[i] = rc_l[i][18:]
+                dinam = rc_l[i][:38]
+            elif ID == 2:
+                stat = rc_l[i][:16]
+                delimDynamic = rverse(rc_l[i][16:24], 4)
+                rc_l[i] = rc_l[i][24:]
+                dinam = rc_l[i][:24]
+            elif ID == 21:
+                stat = rc_l[i][:12]
+                delimDynamic = rverse(rc_l[i][12:20], 4)
+                rc_l[i] = rc_l[i][20:]
+                dinam = rc_l[i][:36]
+            elif ID == 10:
+                stat = rc_l[i][:24]
+                delimDynamic = rverse(rc_l[i][24:32], 4)
+                rc_l[i] = rc_l[i][32:]
+                dinam = rc_l[i][:66]
+            elif ID == 11:
+                stat = rc_l[i][:8]
+                delimDynamic = rverse(rc_l[i][8:16], 4)
+                rc_l[i] = rc_l[i][16:]
+                dinam = rc_l[i][:100]
+                
+            elif ID == 14:
+                stat = rc_l[i][:264]
+                delimDynamic = rverse(rc_l[i][264:272], 4)
+                rc_l[i] = rc_l[i][272:]
+                dinam = rc_l[i][:196]
+                
+            elif ID == 12:
+                stat = rc_l[i][:8]
+                delimDynamic = rverse(rc_l[i][8:16], 4)
+                rc_l[i] = rc_l[i][16:]
+                dinam = rc_l[i][:4]
+                
+            elif ID == 15:
+                stat = rc_l[i][:12]
+                delimDynamic = rverse(rc_l[i][12:20], 4)
+                rc_l[i] = rc_l[i][20:]
+                dinam = rc_l[i][:74]
+                
+            elif ID == 16:
+                #adr = rc_l[i][:16]  # версия 3.9.0(а)
+                #gir1['adress'][i].append(adr)
+                #delimStatic = rverse(rc_l[i][16:24], 4)
+                #rc_l[i][24:]
+                stat = rc_l[i][:40]
+                delimDynamic = rverse(rc_l[i][40:48], 4)
+                rc_l[i] = rc_l[i][48:]
+                dinam = rc_l[i][:40]
+                
+            elif ID == 30:
+                stat = rc_l[i][:8]
+                delimDynamic = rverse(rc_l[i][8:16], 4)
+                rc_l[i] = rc_l[i][16:]
+                dinam = rc_l[i][:4]
+                
+            elif ID == 31:
+                stat = rc_l[i][:8]
+                delimDynamic = rverse(rc_l[i][8:16], 4)
+                rc_l[i] = rc_l[i][16:]
+                dinam = rc_l[i][:4]
+            
+            gir1['stat'].append(stat)
+            gir1['dinam'].append(dinam)
+    elif gir_l[i] == 4:
+        if rf_l[i] == 1:
+            gir4[1].append(rc_l[i])
+        elif rf_l[i] == 2:
+            gir4[2].append(rc_l[i])
+        elif rf_l[i] == 4:
+            gir4[4].append(rc_l[i])
+    elif gir_l[i] == 7:
+        if rf_l[i] == 1:
+            Master = u124(rc_l[i][:2], 1)
+            OM_CC = u124(rc_l[i][2:4], 1)
+            U5 = floatt(rverse(rc_l[i][4:12], 4), 4)
+            U12 = floatt(rverse(rc_l[i][12:20], 4), 4)
+            U_12 = floatt(rverse(rc_l[i][20:28], 4), 4)
+            UH  = floatt(rverse(rc_l[i][28:36], 4), 4)
+            Temp = floatt(rverse(rc_l[i][36:44], 4), 4)
+            ErrCnt = i124(rverse(rc_l[i][44:52], 4), 4)
+            gir7rf1['Master'].append(Master)
+            gir7rf1['OM CC'].append(OM_CC)
+            gir7rf1['U+5'].append(U5)
+            gir7rf1['U+12'].append(U12)
+            gir7rf1['U-12'].append(U_12)
+            gir7rf1['UH'].append(UH)
+            gir7rf1['Temp'].append(Temp)
+            gir7rf1['ErrCnt'].append(ErrCnt)
+        elif rf_l[i] == 2:
+            Master = u124(rc_l[i][:2], 1)
+            OM_CC = u124(rc_l[i][2:4], 1)
+            Pulces = u124(rverse(rc_l[i][4:8], 2), 2)
+            pulce = ''
+            rc_l[i] = rc_l[i][8:]
+            for _ in range(Pulces):
+                pulce += str(rverse(rc_l[i][:8], 4)) + ' '
+                rc_l[i] = rc_l[i][8:]
+            gir7rf2['Master'].append(Master)
+            gir7rf2['OM CC'].append(OM_CC) 
+            gir7rf2['Pulces'].append(Pulces) 
+            gir7rf2['Pulce'].append(pulce) 
+        elif rf_l[i] == 3:
+            gir7rf3 = {'Commutator':[], 'ChannelState':[]}
+            Commutator = u124(rc_l[i][:2], 1)
+            rc_l[i] = rc_l[i][2:]
+            ChannelState = []
+            for _ in range(8):
+                ChannelState.append(floatt(rverse(rc_l[i][:8], 4), 4))
+                rc_l[i] = rc_l[i][8:]
+            gir7rf3['Commutator'].append(Commutator) 
+            gir7rf3['ChannelState'].append(ChannelState)
+        elif rf_l[i] == 4:
+            gir7rf4[0].append(rc_l[i])
+        elif rf_l[i] == 5:
+#gir7rf5 = {'Sensor':[], 'temp_data':[], 'hum_data':[], 'press_data':[], 'accel_data':[], 'mag_data':[]} 
+            Sensor = u124(rc_l[i][:2], 1)
+            
+            num = u124(rverse(rc_l[i][2:6], 2), 2)  
+            rc_l[i] =rc_l[i][6:]
+            temp_data = []
+            for _ in range(num):
+                temp_data.append(rc_l[i][:2])
+                rc_l[i] = rc_l[i][2:]
+                
+            num = u124(rverse(rc_l[i][:4], 2), 2)  
+            rc_l[i] = rc_l[i][4:]
+            hum_data = []
+            for _ in range(num):
+                hum_data.append(rc_l[i][:2])
+                rc_l[i] = rc_l[i][2:]
+                
+            num = u124(rverse(rc_l[i][:4], 2), 2)  
+            rc_l[i] = rc_l[i][4:]
+            press_data = []
+            for _ in range(num):
+                press_data.append(rc_l[i][:2])
+                rc_l[i] = rc_l[i][2:]
+            
+            num = u124(rverse(rc_l[i][:4], 2), 2)  
+            rc_l[i] = rc_l[i][4:]
+            accel_data = []
+            for _ in range(num):
+                accel_data.append(rc_l[i][:2])
+                rc_l[i] = rc_l[i][2:]
+                
+            num = u124(rverse(rc_l[i][:4], 2), 2)  
+            rc_l[i] = rc_l[i][4:]
+            mag_data = []
+            for _ in range(num):
+                mag_data.append(rc_l[i][:2])
+                rc_l[i] = rc_l[i][2:]
+            gir7rf5['Sensor'].append(Sensor)
+            gir7rf5['temp_data'].append(temp_data)
+            gir7rf5['hum_data'].append(hum_data)
+            gir7rf5['press_data'].append(press_data)
+            gir7rf5['accel_data'].append(accel_data)
+            gir7rf5['mag_data'].append(mag_data)
+    elif gir_l[i] == 3:
+        gir3['rf'].append(rf_l[i])
+        gir3['rc'].append(rc_l[i])
 
 
 data0 = pd.DataFrame({'gir':gir_l, 'rl': rl_l, 'rf': rf_l, 'time': time_l, 'rc':rc_l, 'filt':filt })  
@@ -397,15 +610,33 @@ data60.to_csv(f'/home/alex/baikal/{name}_60')
 data61 = pd.DataFrame(gist_data)
 data61.to_csv(f'/home/alex/baikal/{name}_61')
 
+data1 = pd.DataFrame(gir1)
+data4 = pd.DataFrame(gir4)
+data71 = pd.DataFrame(gir7rf1)
+data72 = pd.DataFrame(gir7rf2)
+data73 = pd.DataFrame(gir7rf3)
+data74 = pd.DataFrame(gir7rf4)
+data75 = pd.DataFrame(gir7rf5)
+data3 = pd.DataFrame(gir3)
+
+data1.to_csv(f'/home/alex/baikal/{name}_gir1')
+data4.to_csv(f'/home/alex/baikal/{name}_gir4')
+data71.to_csv(f'/home/alex/baikal/{name}_71')
+data72.to_csv(f'/home/alex/baikal/{name}_72')
+data73.to_csv(f'/home/alex/baikal/{name}_73')
+data74.to_csv(f'/home/alex/baikal/{name}_74')
+data75.to_csv(f'/home/alex/baikal/{name}_75')
+data3.to_csv(f'/home/alex/baikal/{name}_gir3')
 
 
-
-#filt = data60['step'] >= 1013
-filt2 = data0['gir'] != 6
-
+filt2 = data0['rl'] < 152 
+filt = data0['gir'] != 6
+filt3 = data0['filt'] != 3009
+print(data0.loc[filt])
 print(data0.loc[filt2])
+print(data0.loc[filt3])
 #print(data60.loc[filt, 'step'])
-
+print(data60)
 end_time = datetime.now()  # время окончания выполнения
 execution_time = end_time - start_time  # вычисляем время выполнения
  
