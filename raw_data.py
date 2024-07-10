@@ -9,7 +9,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
  
-
+#байты считываются в нужном порядке, но внутри типа данных они перевёрнуты 
+#функция rverse переворачивает их обратно, в зависимости от длины значения в байтах
 def rverse(hexx, lenn):
 
     if len(hexx) == 4: #(lenn = 2)
@@ -44,21 +45,6 @@ def hex_to_binary(num16, byte):  # перевод из 16ричной в дво�
             num2 = f'0{num2}'
     return num2
 
-
-#ЛОЖЬ И НЕПРАВДА
-# перевод из 16ричной в двоичную для разного количества байт
-'''
-def hex_to_b_mult(num1, num2, num3, num4): 
-    if num1 == True:
-        return hex_to_binary(f'{num1}{num2}{num3}{num4}')
-    elif num2 == True:
-        return hex_to_binary(f'{num2}{num3}{num4}')
-    elif num3 == True:
-        return hex_to_binary(f'{num3}{num4}')
-    else:
-        return hex_to_binary(num4)
-'''   
-    
 def u124(num16, byte):  # перевод для беззнаковых типов данных
     num2 = hex_to_binary(num16, byte)
     return int(num2, 2)
@@ -70,42 +56,33 @@ def i124(num16, byte):  # перевод для знаковых типов да
         return int(num2, 2)
     else:  # отрицательные числа
         num2 = bin(int(num2, 2) - 1)[2:]
-
         num2_conv = ''
-        #print('&')
         for c in num2:
             if c == '1':
-                #print('!')
                 num2_conv += '0'
             else:
                 num2_conv += '1'
         return -int(num2_conv, 2)
 
 
-def floatt(hexx, byte):
-
+def floatt(hexx, byte): # перевод для 32-битового float
     num2 = hex_to_binary(hexx, byte)
+    
     while len(num2) != 32:
         num2 = f'0{num2}'
-
     sign = num2[0]
     power = num2[1:9]
     mant = num2[9:]
     power10 = int(power, 2) - 127
-    
-
     result = 2**power10
-    print(result)
     for i in range(len(mant)):
         result += (2**(power10 - 1 - i)) * int(mant[i])
 
-    
-    #result = (2**power10) * int(mant, 2)
     if sign == 1:
         return -result
     else:
         return result
-
+#функция для перевода времени из заголовка записей. Выодит либо unix, либо обычный формат
 def time_func(time, if_unix):
     unix = u124(rverse(time[:8], 4), 4)
     year = u124(rverse(time[8:16], 4), 4)  
@@ -124,7 +101,8 @@ def time_func(time, if_unix):
     else:
         return [year, month, day]
 
-def read_rc(rc, time):
+def read_rc(rc, time):  #основная функция для чтения временнх кадров (gir 6 rf 0), возвращает словарь
+    global counter2
     '''
     head = rc[:255]
     sep = rc[:8]
@@ -164,15 +142,16 @@ def read_rc(rc, time):
     time = time_func(time, False)
     sdc = i124(rverse(rc[160:168], 4), 4)
     soft_event_number = i124(rverse(rc[96:104], 4), 4)
-    #formatt = i124(rverse(rc[224:232], 4), 4)
+    formatt = i124(rverse(rc[224:232], 4), 4)
     timer_time = time_t(rc[136:152])
     local_time = time_loc(rc[112:128])
     
     rc_data = rc[256:]
     one_data_dict = {'time':[], 'timet':[], 'timel':[], 'sdc':[], 'om': [], 'n_filt': [], 'step':[], 'values':[], 'event_n':[], 'mask':[]}
     
-    while formatt == 3009:
-        
+    flag = len(rc_data)
+    while flag > 1:
+        counter2 += 1
         om = u124(rc_data[0:2], 1)
         nfilt = rc_data[2:4]
         
@@ -197,10 +176,12 @@ def read_rc(rc, time):
         rc_data = rc_data[n_bin*2 + 16:]
         if len(rc_data) < 2:
              break
-        return one_data_dict
+    return one_data_dict
+    if flag <= 1:
+        return None
     
 
-def read_rc_gist(rc, time):
+def read_rc_gist(rc, time):  # основная функция для чтения гистограмм
     common_header_id = rc[:8]
     record_type_id = rc[8:16]
     record_type = rc[16:24]
@@ -212,10 +193,8 @@ def read_rc_gist(rc, time):
     soft_hist_number = rc[64:72]
     local_time_id = rc[72:80]
     local_time = rc[80:96]
-
     timer_time_id = rc[96:104]
     timer_time = rc[104:120]
-
     sdc_id = rc[120:128]
     sdc = rc[128:136]
     nplat_id = rc[136:144]
@@ -234,7 +213,6 @@ def read_rc_gist(rc, time):
     hist_format = i124(rverse(hist_format, 4), 4)
     
     data = rc[192:]
-    
     gist_data = {'time':[], 'timel':[], 'timet':[], 'sdc':[],  'soft_hist_number':[], 'hist':[]}
     while len(data) > 0:
         gist = []
@@ -266,12 +244,13 @@ def read_rc_gist(rc, time):
         
     return gist_data
 
+# !!!с этой функцией что-то не так, она выдаёт странные значения!!!
 def time_loc(timel): # секунды и микросекунды с момента старта рана
     seconds = i124(rverse(timel[:8], 4), 4)
     microseconds = i124(rverse(timel[8:], 4), 4)
     return [seconds, microseconds]
 
-def time_t(timet):
+def time_t(timet):  #возвращает время в часах
     hours = u124(timet[:2], 1)
     minutes = u124(timet[2:4], 1)
     sec = u124(timet[4:6], 1)
@@ -281,14 +260,14 @@ def time_t(timet):
     sec = sec + milsec/1000 + micsec/1000000 + tens_nanosec/100000000
     hours += minutes/60 + sec/3600
     return hours
-    
+'''   функция для построения врем. кадров, в другом виде используется в raw_06
 def data_for_plot(value, step):
     x = [i for i in range(0,5000,5)]
     y = [0 for _ in range(1000)]
     
     lenn = int(len(value) / 4)
     for i in range(lenn):
-        num = u124(rverse(value[:4], 2), 2) # нужен ли rverse?
+        num = u124(rverse(value[:4], 2), 2) 
         y[step + i] = num
         value = value[4:]
     fig1 = plt.figure(figsize=(12, 7))
@@ -300,14 +279,15 @@ def data_for_plot(value, step):
     #plt.scatter(x, y, color = 'black', s=10, marker='*')
     plt.plot(x,y)
     plt.show()
-        
+'''      
+#штука, чтобы следить за длиткльность работы программы, обычно несколько минут
 start_time = datetime.now()  
 print(start_time) 
         
         
-            
+#имя файла          
 name = 'i0136_05.043'
-
+#заготовка списков для глобальной таблицы, в них считывается файл, по ним будет идти основной цикл
 gir_l = []
 rl_l = []
 rf_l = []
@@ -338,7 +318,7 @@ with open(name, 'rb') as file: #открытие файла, считывани�
         except:
             print('Ошибка при чтении файла')
             sep = '1' 
-        if sep != 'fdfcfb7a':
+        if sep != 'fdfcfb7a':  # в обратном порядке, потому что так он считывается с файла
             break
 
 # заготовка для мастерных записей (врем. кадры)
@@ -356,22 +336,31 @@ gir7rf3 = {'Commutator':[], 'ChannelState':[]}
 gir7rf4 = {0:[]}
 gir7rf5 = {'Sensor':[], 'temp_data':[], 'hum_data':[], 'press_data':[], 'accel_data':[], 'mag_data':[]}
 gir3 = {'rf':[], 'rc':[]}
-for i in range(len(rc_l)): #цикл по всем записям
+
+
+counter = 0 # количество мастерных записей без данных (нулевые )
+counter2 = 0 # количество мастерных записей прошедших цикл в функции
+for i in range(len(rc_l)): #основной цикл по всем записям
+    """
     if gir_l[i] != 6 or rf_l[i] != 0 :  # для не мастерных данных
         formatt = None
     else:    
         formatt = i124(rverse(rc_l[i][224:232], 4), 4)  # проверка на фильтрованность маст. данных
     filt.append(formatt)
-    
-    if gir_l[i] == 6 and rf_l[i] == 0 and formatt == 3009: # заполнение словаря для фильтрованных маст. данных
-
+    """
+    if gir_l[i] == 6 and rf_l[i] == 0: # заполнение словаря для фильтрованных маст. данных
+        '''
         try:
             dataset_i = read_rc(rc_l[i], time_l[i])  # ошибка возникает для записей, содержащих только 
                                                      # заголовок, буду их пока выкидывать 
         except:
+            counter += 1
             continue
+        '''
+        dataset_i = read_rc(rc_l[i], time_l[i])
         
         if dataset_i == None:
+            counter += 1
             continue
 
         dataset['om'].extend(dataset_i['om'])
@@ -603,13 +592,16 @@ for i in range(len(rc_l)): #цикл по всем записям
         gir3['rf'].append(rf_l[i])
         gir3['rc'].append(rc_l[i])
 
+# большая таблица
+data0 = pd.DataFrame({'gir':gir_l, 'rl': rl_l, 'rf': rf_l, 'time': time_l, 'rc':rc_l })  
 
-data0 = pd.DataFrame({'gir':gir_l, 'rl': rl_l, 'rf': rf_l, 'time': time_l, 'rc':rc_l, 'filt':filt })  
+# создание и запись в файлы мастерных данных
 data60 = pd.DataFrame(dataset)
 data60.to_csv(f'/home/alex/baikal/{name}_60')
 data61 = pd.DataFrame(gist_data)
 data61.to_csv(f'/home/alex/baikal/{name}_61')
 
+# создание и запись в файлы всего остального
 data1 = pd.DataFrame(gir1)
 data4 = pd.DataFrame(gir4)
 data71 = pd.DataFrame(gir7rf1)
@@ -629,15 +621,19 @@ data75.to_csv(f'/home/alex/baikal/{name}_75')
 data3.to_csv(f'/home/alex/baikal/{name}_gir3')
 
 
-filt2 = data0['rl'] < 152 
+filt2 = data0['rl'] >= 152 
+filt3 = data0['rl'] < 152 
 filt = data0['gir'] != 6
-filt3 = data0['filt'] != 3009
+#filt3 = data0['filt'] != 3009
 print(data0.loc[filt])
-print(data0.loc[filt2])
-print(data0.loc[filt3])
+print(data0.loc[filt2, 'rl'])
+print(data0.loc[filt3, 'rl'])
+#print(data0.loc[filt3])
 #print(data60.loc[filt, 'step'])
 print(data60)
+print()
+print(counter)
+print(counter2)
 end_time = datetime.now()  # время окончания выполнения
 execution_time = end_time - start_time  # вычисляем время выполнения
- 
-print(f"Время выполнения программы: {execution_time} секунд")
+print(f"Время выполнения программы: {execution_time} ")

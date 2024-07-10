@@ -43,19 +43,6 @@ def hex_to_binary(num16, byte):  # перевод из 16ричной в дво�
         while len(num2) != 32:
             num2 = f'0{num2}'
     return num2
-
-
-#ЛОЖЬ И НЕПРАВДА
-# перевод из 16ричной в двоичную для разного количества байт
-def hex_to_b_mult(num1, num2, num3, num4): 
-    if num1 == True:
-        return hex_to_binary(f'{num1}{num2}{num3}{num4}')
-    elif num2 == True:
-        return hex_to_binary(f'{num2}{num3}{num4}')
-    elif num3 == True:
-        return hex_to_binary(f'{num3}{num4}')
-    else:
-        return hex_to_binary(num4)
     
     
 def u124(num16, byte):  # перевод для беззнаковых типов данных
@@ -82,7 +69,6 @@ def i124(num16, byte):  # перевод для знаковых типов да
 
 
 def floatt(hexx):
-
     num2 = hex_to_binary(hexx)
     while len(num2) != 32:
         num2 = f'0{num2}'
@@ -92,13 +78,10 @@ def floatt(hexx):
     mant = num2[9:]
     power10 = int(power, 2) - 127
     
-
     result = 2**power10
     print(result)
     for i in range(len(mant)):
         result += (2**(power10 - 1 - i)) * int(mant[i])
-
-    
     #result = (2**power10) * int(mant, 2)
     if sign == 1:
         return -result
@@ -127,6 +110,7 @@ def data_for_plot(value, step):
     x = [i for i in range(0,5130,5)]
     y = [first_value - 100 for _ in range(1026)]
     '''
+    
     x = [i for i in range(0,5130,5)]
     y = [0 for _ in range(1026)]
     
@@ -146,7 +130,7 @@ def data_for_plot(value, step):
 start_time = datetime.now()  
 print(start_time) 
 
-name = 'i0189_03.044_60'
+name = 'i0136_05.043_60'
 
 data = pd.read_csv(f'{name}')
 
