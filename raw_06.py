@@ -9,6 +9,7 @@ Created on Sat Jul  6 19:00:47 2024
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
+import numpy as np
 
 def rverse(hexx, lenn):
 
@@ -127,25 +128,97 @@ def data_for_plot(value, step):
         return y, x
     except IndexError:
        return 0, 0
+   
+def get_hhw(value, step):
+    x = step + int(len(value)/4)
+    lenn = int(len(value) / 4)
+    for i in range(lenn):
+        num = u124(rverse(value[:4], 2), 2) 
+        if i == int(lenn/2):
+            y = num
+            break
+        value = value[4:]
+    return x, y
+
+
+
 start_time = datetime.now()  
 print(start_time) 
+T = []
+Y = []
+name = '/home/alex/baikal/files_10/time/n0068_10.0004_60'
+for i in range(23, 46):
+    if i < 10:
+        data = pd.read_csv(f'{name[:42]}00{i}_60')
+    else:
+        data = pd.read_csv(f'{name[:42]}0{i}_60')
+        
+    #print(data)
 
-name = 'i0136_05.043_60'
 
-data = pd.read_csv(f'{name}')
+    values = list(data['values'])
+    step = list(data['step'])
 
-print(data['values'])
+    t = []
+    y = []
+    for j in range(len(values)):
+        a, b = get_hhw(values[j], step[j])
+        t.append(a)
+        y.append(b)
+    data['y'] = y
+    data['t'] = (t  + data['timet'] * 60 * 60 * 1000000000) / 1000 #мкс
 
-print(data['step'])
+    T.extend(t)
+    Y.extend(y)
+    # создание сетки 
+    #x = [i for i in range(1, 37)]
+    #y = [i for i in range(1, 10)]
+    #flux = np.array([x, y])
 
-values = list(data['values'])
-step = list(data['step'])
 
-counter = 0
-impulse_x = []
-impulse_y = []
+# какая-то сортровка по амплитуде...
+    print(data['y'].mean())
+
+'''
+    fig1 = plt.figure(figsize=(12, 7))
+    fig1.suptitle(f'{i}')
+    ax1 = fig1.add_subplot(111)
+    #ax1.set_title('EXO 040830-7134.7, exptime=20s')
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('сигнал')
+    plt.scatter(data['t'], data['y'], color = 'black', s=5, marker='*')
+    #plt.plot(data['t'], data['y'])
+    #plt.show()
+
+    fig1.savefig(f'{name[:42]}0{i}_60.png')
+'''
+
+fig2 = plt.figure(figsize=(12, 7))
+fig2.suptitle('all')
+ax2 = fig2.add_subplot(111)
+#ax1.set_title('EXO 040830-7134.7, exptime=20s')
+ax2.set_xlabel('Time')
+ax2.set_ylabel('сигнал')
+plt.scatter(T, Y, color = 'black', s=5, marker='*')
+#plt.plot(data['t'], data['y'])
+fig2.savefig('10_all2.png')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # этот цикл сильно зависает 
+'''
 for i in range(len(values)):
 
 
@@ -155,12 +228,13 @@ for i in range(len(values)):
     if i > 5000:
         print('done')
         break
+    '''
 #посмотреть другой способ, этот не работает
 #data['impulse_y'], data['impulse_x'] = data['values'].apply(data_for_plot(data['values'], data['step'], False))
 #data['impulse_y'], data['impulse_x'] = data_for_plot(data['values'], data['step'], False)
 
 
-
+'''
 check = {'x': impulse_x, 'y': impulse_y}
 df = pd.DataFrame(check)
 print(df['x'])
@@ -181,7 +255,7 @@ for i in range(5):
     #plt.scatter(x, y, color = 'black', s=10, marker='*')
     plt.plot(x,y)
     plt.show()
-
+'''
 
 
 

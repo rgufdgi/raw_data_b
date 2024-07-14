@@ -286,7 +286,7 @@ print(start_time)
         
         
 #имя файла          
-name = 'i0136_05.043'
+name = '/home/alex/baikal/files_13/n0075_13.0007'
 #заготовка списков для глобальной таблицы, в них считывается файл, по ним будет идти основной цикл
 gir_l = []
 rl_l = []
@@ -403,6 +403,8 @@ for i in range(len(rc_l)): #основной цикл по всем запися
         n_size = i124(rverse(rc_l[i][16:24], 4), 4)
         
         for i in range(n_elements):
+            # тут был кусок кода, чтобы не было ошибок от коротких записей
+            # но всё удалилось...
             #адресная часть
             rc_l[i] = rc_l[i][24:]
             cluster = i124(rverse(rc_l[i][:4], 2), 2)
@@ -497,10 +499,16 @@ for i in range(len(rc_l)): #основной цикл по всем запися
     elif gir_l[i] == 4:
         if rf_l[i] == 1:
             gir4[1].append(rc_l[i])
+            gir4[2].append(None)
+            gir4[4].append(None)
         elif rf_l[i] == 2:
             gir4[2].append(rc_l[i])
+            gir4[1].append(None)
+            gir4[4].append(None)
         elif rf_l[i] == 4:
             gir4[4].append(rc_l[i])
+            gir4[2].append(None)
+            gir4[1].append(None)
     elif gir_l[i] == 7:
         if rf_l[i] == 1:
             Master = u124(rc_l[i][:2], 1)
@@ -597,9 +605,9 @@ data0 = pd.DataFrame({'gir':gir_l, 'rl': rl_l, 'rf': rf_l, 'time': time_l, 'rc':
 
 # создание и запись в файлы мастерных данных
 data60 = pd.DataFrame(dataset)
-data60.to_csv(f'/home/alex/baikal/{name}_60')
+data60.to_csv(f'{name[:26]}/time/{name[26:]}_60')
 data61 = pd.DataFrame(gist_data)
-data61.to_csv(f'/home/alex/baikal/{name}_61')
+#data61.to_csv(f'/home/alex/baikal/{name}_61')
 
 # создание и запись в файлы всего остального
 data1 = pd.DataFrame(gir1)
@@ -611,6 +619,7 @@ data74 = pd.DataFrame(gir7rf4)
 data75 = pd.DataFrame(gir7rf5)
 data3 = pd.DataFrame(gir3)
 
+'''
 data1.to_csv(f'/home/alex/baikal/{name}_gir1')
 data4.to_csv(f'/home/alex/baikal/{name}_gir4')
 data71.to_csv(f'/home/alex/baikal/{name}_71')
@@ -619,7 +628,7 @@ data73.to_csv(f'/home/alex/baikal/{name}_73')
 data74.to_csv(f'/home/alex/baikal/{name}_74')
 data75.to_csv(f'/home/alex/baikal/{name}_75')
 data3.to_csv(f'/home/alex/baikal/{name}_gir3')
-
+'''
 
 filt2 = data0['rl'] >= 152 
 filt3 = data0['rl'] < 152 
