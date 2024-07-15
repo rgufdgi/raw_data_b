@@ -149,7 +149,24 @@ Y = []
 name = '/home/alex/baikal/files_13/time/n0075_13.0004_60'
 
 
-for i in range(9, 15):
+sec_data192 = pd.DataFrame()
+sec_data193 = pd.DataFrame()
+sec_data194 = pd.DataFrame()
+sec_data195 = pd.DataFrame()
+sec_data196 = pd.DataFrame()
+sec_data197 = pd.DataFrame()
+sec_data207 = pd.DataFrame()
+sec_data208 = pd.DataFrame()
+sec_data209 = pd.DataFrame()
+sec_data210 = pd.DataFrame()
+sec_data211 = pd.DataFrame()
+sec_data212 = pd.DataFrame()
+sec_data216 = pd.DataFrame()
+sec_data217 = pd.DataFrame()
+sec_data218 = pd.DataFrame()
+
+
+for i in range(9, 20):
     if i < 10:
         data = pd.read_csv(f'{name[:42]}00{i}_60')
     else:
@@ -227,7 +244,110 @@ for i in range(9, 15):
     data92 = data.loc[filt26]
     data93 = data.loc[filt27]
 
+    if i == 9:
+        sec_data192 = pd.concat([sec_data192, data11], ignore_index=True)
+        sec_data195 = pd.concat([sec_data195, data21], ignore_index=True)
+        sec_data207 = pd.concat([sec_data207, data61], ignore_index=True)
+        sec_data210 = pd.concat([sec_data210, data71], ignore_index=True)
+        sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
+        
+    if i == 10:
+        sec_data192 = pd.concat([sec_data192, data11], ignore_index=True)
+        sec_data195 = pd.concat([sec_data195, data21], ignore_index=True)
+        sec_data207 = pd.concat([sec_data207, data61], ignore_index=True)
+        sec_data210 = pd.concat([sec_data210, data71], ignore_index=True)
+        sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
+        
+    if i == 11:
+        sec_data192 = pd.concat([sec_data192, data11], ignore_index=True)
+        sec_data207 = pd.concat([sec_data207, data61], ignore_index=True)
+        sec_data210 = pd.concat([sec_data210, data71], ignore_index=True)
+        sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
+        
+    if i == 12:
+        sec_data192 = pd.concat([sec_data192, data11], ignore_index=True)
+        sec_data210 = pd.concat([sec_data210, data71], ignore_index=True)
+        sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
+        
+    if i == 13:
+        sec_data210 = pd.concat([sec_data210, data71], ignore_index=True)
+        sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
+        
+    if i == 14:
+        sec_data193 = pd.concat([sec_data193, data12], ignore_index=True)
+        sec_data194 = pd.concat([sec_data194, data13], ignore_index=True)
+        sec_data196 = pd.concat([sec_data196, data22], ignore_index=True)
+        sec_data208 = pd.concat([sec_data208, data62], ignore_index=True)
+        sec_data209 = pd.concat([sec_data209, data63], ignore_index=True)
+        sec_data211 = pd.concat([sec_data211, data72], ignore_index=True)
+        sec_data212 = pd.concat([sec_data212, data73], ignore_index=True)
+        sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+        sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+        
+    if i == 15:
+        sec_data193 = pd.concat([sec_data193, data12], ignore_index=True)
+        sec_data194 = pd.concat([sec_data194, data13], ignore_index=True)
+        sec_data196 = pd.concat([sec_data196, data22], ignore_index=True)
+        sec_data197 = pd.concat([sec_data197, data23], ignore_index=True)
+        print(data23)
+        sec_data208 = pd.concat([sec_data208, data62], ignore_index=True)
+        sec_data209 = pd.concat([sec_data209, data63], ignore_index=True)
+        sec_data211 = pd.concat([sec_data211, data72], ignore_index=True)
+        sec_data212 = pd.concat([sec_data212, data73], ignore_index=True)
+        sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+        sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+        
+    if i == 16:
+        sec_data193 = pd.concat([sec_data193, data12], ignore_index=True)
+        sec_data194 = pd.concat([sec_data194, data13], ignore_index=True)
+        sec_data208 = pd.concat([sec_data208, data62], ignore_index=True)
+        sec_data209 = pd.concat([sec_data209, data63], ignore_index=True)
+        sec_data211 = pd.concat([sec_data211, data72], ignore_index=True)
+        sec_data212 = pd.concat([sec_data212, data73], ignore_index=True)
+        sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+        sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+            
+    if i == 17:
+        sec_data193 = pd.concat([sec_data193, data12], ignore_index=True)
+        sec_data194 = pd.concat([sec_data194, data13], ignore_index=True)
+        sec_data211 = pd.concat([sec_data211, data72], ignore_index=True)
+        sec_data212 = pd.concat([sec_data212, data73], ignore_index=True)
+        sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+        sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+         
+    if i == 18:
+        sec_data193 = pd.concat([sec_data193, data12], ignore_index=True)
+        sec_data194 = pd.concat([sec_data194, data13], ignore_index=True)
+        sec_data211 = pd.concat([sec_data211, data72], ignore_index=True)
+        sec_data212 = pd.concat([sec_data212, data73], ignore_index=True)
+        sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+        sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+        
+    if i == 19:
+        sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+        sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+         
+        
+sec_data192.to_csv('sec_data192')   
+sec_data193.to_csv('sec_data193')  
+sec_data194.to_csv('sec_data194')  
+sec_data195.to_csv('sec_data195')    
+sec_data196.to_csv('sec_data196')  
+sec_data197.to_csv('sec_data197')  
+sec_data207.to_csv('sec_data207')  
+sec_data208.to_csv('sec_data208') 
+sec_data209.to_csv('sec_data209')  
+sec_data210.to_csv('sec_data210')  
+sec_data211.to_csv('sec_data211')  
+sec_data212.to_csv('sec_data212')  
+sec_data216.to_csv('sec_data216')  
+sec_data217.to_csv('sec_data217')  
+sec_data218.to_csv('sec_data218')      
+print(sec_data197)
 
+        
+# построение графиков для каждой секции
+'''
     fig1 = plt.figure()
     fig1.set_figheight(30)
     fig1.set_figwidth(25)
@@ -382,6 +502,10 @@ for i in range(9, 15):
     fig1.savefig(f'3strings1_{i}.png')
     fig2.savefig(f'3strings2_{i}.png')
     fig3.savefig(f'3strings3_{i}.png')
+'''
+
+
+
     # создание сетки 
     #x = [i for i in range(1, 37)]
     #y = [i for i in range(1, 10)]
