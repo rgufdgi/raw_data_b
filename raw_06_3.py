@@ -122,6 +122,19 @@ def om(dataset, num):
         plt.scatter(newset['t'], newset['y'], color = 'black', s=2, marker='*')
         #plt.show()
         fig1.savefig(f'{num}_{i}OM.png')
+        
+def section(dataset, num):
+    fig1 = plt.figure()
+    fig1.set_figheight(10)
+    fig1.set_figwidth(15)
+    fig1.suptitle(f'секция {num}')
+    ax1 = fig1.add_subplot(111)
+    #ax1.set_title(f'{num}, {i}')
+    ax1.set_xlabel('время, мкс')
+    ax1.set_ylabel('сигнал АЦП')
+    plt.scatter(dataset['t'], dataset['y'], color = 'black', s=2, marker='*')
+    #plt.show()
+    fig1.savefig(f'{num}_section.png')
 
 
 start_time = datetime.now()  
@@ -139,10 +152,15 @@ sec_data209 = pd.read_csv('sec_data209')
 sec_data210 = pd.read_csv('sec_data210')  
 sec_data211 = pd.read_csv('sec_data211')  
 sec_data212 = pd.read_csv('sec_data212')  
+sec_data213 = pd.read_csv('sec_data213')  
+sec_data214 = pd.read_csv('sec_data214')  
+sec_data215 = pd.read_csv('sec_data215')  
 sec_data216 = pd.read_csv('sec_data216')  
 sec_data217 = pd.read_csv('sec_data217')  
 sec_data218 = pd.read_csv('sec_data218') 
 
+
+'''
 om(sec_data207, 207)
 om(sec_data208, 208)
 om(sec_data209, 209)
@@ -152,9 +170,25 @@ om(sec_data212, 212)
 om(sec_data216, 216)
 om(sec_data217, 217)
 om(sec_data218, 218)
-
-
-
+'''
+section(sec_data192, 192)
+section(sec_data193, 193)
+section(sec_data194, 194)
+section(sec_data195, 195)
+section(sec_data196, 196)
+section(sec_data197, 197)
+section(sec_data207, 207)
+section(sec_data208, 208)
+section(sec_data209, 209)
+section(sec_data210, 210)
+section(sec_data211, 211)
+section(sec_data212, 212)
+section(sec_data213, 213)
+section(sec_data214, 214)
+section(sec_data215, 215)
+section(sec_data216, 216)
+section(sec_data217, 217)
+section(sec_data218, 218)
 
 
 
