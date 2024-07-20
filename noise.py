@@ -11,7 +11,14 @@ from datetime import datetime
 import numpy as np
 
 
-def om(dataset):  # нужно делить на время.... 
+def om(dataset): 
+    datafile = open('noises13_low.txt', 'a')
+    head = 'low\t'*12
+    datafile.write('вспышка лазера\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\n') 
+    datafile.write(f'Секция {dataset["sdc"][0]} \t{head}\n')
+    
+    # laser strart/stop time
+    laser = ((4693900000, 4763700000), (4766400000, 4836350000), (4841900000, 4911940000), (4914520000, 4984530000), (4990200000, 5060150000), (5062900000, 5132720000), (5138350000, 5208300000), (5210980000, 5280900000), (5286500000, 5356800000), (5359200000, 5429100000),  (5438200000, 5508100000), (5510800000, 5580750000))
     for i in range(12):
         filt = dataset['om'] == i
         newset = dataset.loc[filt]
@@ -52,9 +59,6 @@ def om(dataset):  # нужно делить на время....
         # количество событий над шумовыми дорожками
         all_events = (len(noise_set1['y'])/time1 + len(noise_set2['y'])/time2) / 2
         hight_noise_events = all_events - noise_events
-        
-        
-  
         '''
         if i == 4:  #для рисования примера
             param_list1 = [param for _ in range(len(t_noise1))]
@@ -82,13 +86,59 @@ def om(dataset):  # нужно делить на время....
             #plt.plot(t_noise2, param_list6)
             plt.show()
         '''
+        info_low = []
+        info_middle = []
+        info_middle_n = []
+        info_hight = []
+        info_hight_n = []
+        omstr = ''
+        # начало доставания шумов
+        for j in range(len(laser)):
+            # нижние события
+            filt_left = newset['t'] > laser[j][0]
+            newset_left = newset[filt_left]
+            filt_right = newset_left['t'] < laser[j][1]
+            newset_right = newset_left.loc[filt_right]
+            filt_low = newset_right['y'] < noise_min
+            newset_low = newset_right.loc[filt_low]
+            low = len(newset_low)
+            #print(i, j, low)
+            info_low.append(low)
+           
+            '''
+            #события внутри
+            time = (laser[j][1] - laser[j][0])/1000000
+            filt_not_low = newset_right['y'] > noise_min
+            newset_notlow = newset_right.loc[filt_not_low]
+            filt_not_low2 = newset_notlow['y'] < noise_max
+            newset_notlow = newset_notlow.loc[filt_not_low2]
+            middle = len(newset_notlow)
+            info_middle_n.append(middle)
+            middle -= int(noise_events*time)
+            info_middle.append(middle)
+            
+            #события сверху
+            filt_hight = newset_right['y'] > noise_max
+            newset_hight = newset_right.loc[filt_hight]
+            hight = len(newset_hight)
+            info_hight_n.append(hight)
+            hight -= int(hight_noise_events*time)
+            info_hight.append(hight)
+            '''
+            #omstr0 = f'{low} {info_middle_n[-1]} {middle} {info_hight_n[-1]} {hight}\t'
+            omstr0 = f'{low}\t'
+            omstr += omstr0
+            
+
         
+        datafile.write(f'OM{i}\t{omstr}\n')
+    datafile.close()
         
 start_time = datetime.now()  
 print(start_time)         
 
 
-for i in range(192, 193):
+for i in range(207, 209):
     try:
         section_data = pd.read_csv(f'/home/alex/baikal/files_13/next/sec_data{i}_13')  
     except:
@@ -97,8 +147,8 @@ for i in range(192, 193):
     section_data.drop(columns=['Unnamed: 0.1', 'Unnamed: 0'], inplace=True)
     column_names = section_data.keys().tolist()
     print(column_names)
-    #om(section_data)
-    
+    om(section_data)
+    '''
     filt1 = (section_data['t'] > 5575000000)  
     exset = section_data.loc[filt1]
     filt2 = (exset['t'] < 5585000000)
@@ -122,7 +172,7 @@ for i in range(192, 193):
     fig1.savefig('grid2.png')
 
     #plt.show()
-    
+    '''
     
     
     
