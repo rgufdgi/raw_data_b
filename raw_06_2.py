@@ -146,7 +146,7 @@ start_time = datetime.now()
 print(start_time) 
 T = []
 Y = []
-name = '/home/alex/baikal/files_10/time/n0075_13.0004_60'
+name = '/home/alex/baikal/files_13/time/n0075_13.0004_60'
 
 
 sec_data192 = pd.DataFrame()
@@ -234,7 +234,7 @@ sec_data216.drop(columns=['Unnamed:'], inplace=True)
 sec_data217.drop(columns=['Unnamed:'], inplace=True)
 sec_data218.drop(columns=['Unnamed:'], inplace=True)
 '''
-for i in range(9, 20):
+for i in range(8, 21):
     if i < 10:
         data = pd.read_csv(f'{name[:42]}00{i}_60')
     else:
@@ -280,9 +280,9 @@ for i in range(9, 20):
     filt22 = data['sdc'] == 213
     filt23 = data['sdc'] == 214
     filt24 = data['sdc'] == 215
-    filt25 = data['sdc'] == 216
-    filt26 = data['sdc'] == 217
-    filt27 = data['sdc'] == 218
+    #filt25 = data['sdc'] == 216
+    #filt26 = data['sdc'] == 217
+   # filt27 = data['sdc'] == 218
     
     data11 = data.loc[filt1]
     data12 = data.loc[filt2]
@@ -308,9 +308,9 @@ for i in range(9, 20):
     data81 = data.loc[filt22]
     data82 = data.loc[filt23]
     data83 = data.loc[filt24]
-    data91 = data.loc[filt25]
-    data92 = data.loc[filt26]
-    data93 = data.loc[filt27]
+    #data91 = data.loc[filt25]
+    #data92 = data.loc[filt26]
+   # data93 = data.loc[filt27]
     
     
     sec_data192 = pd.concat([sec_data192, data11], ignore_index=True)
@@ -337,39 +337,39 @@ for i in range(9, 20):
     sec_data213 = pd.concat([sec_data213, data81], ignore_index=True)
     sec_data214 = pd.concat([sec_data214, data82], ignore_index=True)
     sec_data215 = pd.concat([sec_data215, data83], ignore_index=True)
-    sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
-    sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
-    sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
+    #sec_data216 = pd.concat([sec_data216, data91], ignore_index=True)
+    #sec_data217 = pd.concat([sec_data217, data92], ignore_index=True)
+    #sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
         
 
  
-sec_data192.to_csv('sec_data192')   
-sec_data193.to_csv('sec_data193')  
-sec_data194.to_csv('sec_data194')  
-sec_data195.to_csv('sec_data195')    
-sec_data196.to_csv('sec_data196')  
-sec_data197.to_csv('sec_data197')  
-sec_data198.to_csv('sec_data198')    
-sec_data199.to_csv('sec_data199')  
-sec_data200.to_csv('sec_data200') 
-sec_data201.to_csv('sec_data201')    
-sec_data202.to_csv('sec_data202')  
-sec_data203.to_csv('sec_data203') 
-sec_data204.to_csv('sec_data204')    
-sec_data205.to_csv('sec_data205')  
-sec_data206.to_csv('sec_data206') 
-sec_data207.to_csv('sec_data207')  
-sec_data208.to_csv('sec_data208') 
-sec_data209.to_csv('sec_data209')  
-sec_data210.to_csv('sec_data210')  
-sec_data211.to_csv('sec_data211')  
-sec_data212.to_csv('sec_data212')  
-sec_data213.to_csv('sec_data213')  
-sec_data214.to_csv('sec_data214')  
-sec_data215.to_csv('sec_data215')  
-sec_data216.to_csv('sec_data216')  
-sec_data217.to_csv('sec_data217')  
-sec_data218.to_csv('sec_data218')      
+sec_data192.to_csv('sec_data192_13')   
+sec_data193.to_csv('sec_data193_13')  
+sec_data194.to_csv('sec_data194_13')  
+sec_data195.to_csv('sec_data195_13')    
+sec_data196.to_csv('sec_data196_13')  
+sec_data197.to_csv('sec_data197_13')  
+sec_data198.to_csv('sec_data198_13')    
+sec_data199.to_csv('sec_data199_13')  
+sec_data200.to_csv('sec_data200_13') 
+sec_data201.to_csv('sec_data201_13')    
+sec_data202.to_csv('sec_data202_13')  
+sec_data203.to_csv('sec_data203_13') 
+sec_data204.to_csv('sec_data204_13')    
+sec_data205.to_csv('sec_data205_13')  
+sec_data206.to_csv('sec_data206_13') 
+sec_data207.to_csv('sec_data207_13')  
+sec_data208.to_csv('sec_data208_13') 
+sec_data209.to_csv('sec_data209_13')  
+sec_data210.to_csv('sec_data210_13')  
+sec_data211.to_csv('sec_data211_13')  
+sec_data212.to_csv('sec_data212_13')  
+sec_data213.to_csv('sec_data213_13')  
+sec_data214.to_csv('sec_data214_13')  
+sec_data215.to_csv('sec_data215_13')  
+sec_data216.to_csv('sec_data216_13')  
+sec_data217.to_csv('sec_data217_13')  
+sec_data218.to_csv('sec_data218_13')      
 print(sec_data197)
 
         

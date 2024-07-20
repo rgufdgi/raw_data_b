@@ -114,62 +114,71 @@ def om(dataset, num):
         fig1 = plt.figure()
         fig1.set_figheight(10)
         fig1.set_figwidth(15)
-        fig1.suptitle(f'{num}, {i}')
+        fig1.suptitle(f'13, {num}, {i}')
         ax1 = fig1.add_subplot(111)
         #ax1.set_title(f'{num}, {i}')
         ax1.set_xlabel('время, мкс')
         ax1.set_ylabel('сигнал АЦП')
         plt.scatter(newset['t'], newset['y'], color = 'black', s=2, marker='*')
         #plt.show()
-        fig1.savefig(f'{num}_{i}OM.png')
+        fig1.savefig(f'13_{num}_{i}OM.png')
         
 def section(dataset, num):
     fig1 = plt.figure()
     fig1.set_figheight(10)
     fig1.set_figwidth(15)
-    fig1.suptitle(f'секция {num}')
+    fig1.suptitle(f'10, секция {num}')
     ax1 = fig1.add_subplot(111)
     #ax1.set_title(f'{num}, {i}')
     ax1.set_xlabel('время, мкс')
     ax1.set_ylabel('сигнал АЦП')
     plt.scatter(dataset['t'], dataset['y'], color = 'black', s=2, marker='*')
     #plt.show()
-    fig1.savefig(f'{num}_section.png')
+    fig1.savefig(f'10_{num}_section.png')
 
 
 start_time = datetime.now()  
 print(start_time) 
 
-sec_data192 = pd.read_csv('sec_data192')   
-sec_data193 = pd.read_csv('sec_data193')  
-sec_data194 = pd.read_csv('sec_data194')  
-sec_data195 = pd.read_csv('sec_data195')    
-sec_data196 = pd.read_csv('sec_data196')  
-sec_data197 = pd.read_csv('sec_data197')  
-sec_data207 = pd.read_csv('sec_data207')  
-sec_data208 = pd.read_csv('sec_data208') 
-sec_data209 = pd.read_csv('sec_data209')  
-sec_data210 = pd.read_csv('sec_data210')  
-sec_data211 = pd.read_csv('sec_data211')  
-sec_data212 = pd.read_csv('sec_data212')  
-sec_data213 = pd.read_csv('sec_data213')  
-sec_data214 = pd.read_csv('sec_data214')  
-sec_data215 = pd.read_csv('sec_data215')  
-sec_data216 = pd.read_csv('sec_data216')  
-sec_data217 = pd.read_csv('sec_data217')  
-sec_data218 = pd.read_csv('sec_data218') 
-
-
+sec_data192 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data192_13') 
+'''  
+sec_data193 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data193_13')  
+sec_data194 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data194_13') 
+''' 
+#sec_data195 = pd.read_csv('/home/alex/baikal/sec_data195_13')    
+#sec_data196 = pd.read_csv('/home/alex/baikal/sec_data196_13')  
+#sec_data197 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data197_13')  
+#sec_data204 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data204_13')  
+#sec_data205 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data205_13') 
+#sec_data206 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data206_13') 
 '''
-om(sec_data207, 207)
-om(sec_data208, 208)
-om(sec_data209, 209)
-om(sec_data210, 210)
-om(sec_data211, 211)
-om(sec_data212, 212)
-om(sec_data216, 216)
-om(sec_data217, 217)
-om(sec_data218, 218)
+sec_data207 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data207_13')  
+sec_data208 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data208_13') 
+sec_data209 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data209_13')  
+sec_data210 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data210_13')  
+sec_data211 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data211_13')  
+sec_data212 = pd.read_csv('/home/alex/baikal/files_13/next/sec_data212_13')  
+'''
+#sec_data213 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data213_13')  
+#sec_data214 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data214_13')  
+#sec_data215 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data215_13')  
+#sec_data216 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data216_13')  
+#sec_data217 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data217_13')  
+#sec_data218 = pd.read_csv('/home/alex/baikal/files_10/next/sec_data218_13') 
+
+print(max(sec_data192['t']))
+
+#om(sec_data192, 192)
+#om(sec_data193, 193)
+#om(sec_data194, 194)
+#om(sec_data210, 210)
+#om(sec_data211, 211)
+#om(sec_data212, 212)
+#om(sec_data207, 207)
+#om(sec_data208, 208)
+#om(sec_data209, 209)
+
+
 '''
 section(sec_data192, 192)
 section(sec_data193, 193)
@@ -191,8 +200,10 @@ section(sec_data217, 217)
 section(sec_data218, 218)
 
 
-
-
+section(sec_data204, 204)
+section(sec_data205, 205)
+section(sec_data206, 206)
+'''
 
 
 

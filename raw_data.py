@@ -94,12 +94,12 @@ def time_func(time, if_unix):
     milsec = u124(rverse(time[26:], 4), 4)
     
     sec += milsec/1000
-    hours += minutes/60 + sec/3600 
-    day += hours/24
+    #hours += minutes/60 + sec/3600 
+    #day += hours/24
     if if_unix == True:
         return unix
     else:
-        return [year, month, day]
+        return [year, month, day, hours, minutes, sec]
 
 def read_rc(rc, time):  #основная функция для чтения временнх кадров (gir 6 rf 0), возвращает словарь
     global counter2
@@ -286,7 +286,7 @@ print(start_time)
         
         
 #имя файла          
-name = '/home/alex/baikal/files_13/n0075_13.0007'
+name = '/home/alex/baikal/files_13/n0075_13.0028'
 #заготовка списков для глобальной таблицы, в них считывается файл, по ним будет идти основной цикл
 gir_l = []
 rl_l = []
@@ -640,7 +640,7 @@ print(data0.loc[filt3, 'rl'])
 #print(data0.loc[filt3])
 #print(data60.loc[filt, 'step'])
 print(data60)
-print()
+#print(data0['time'])
 print(counter)
 print(counter2)
 end_time = datetime.now()  # время окончания выполнения
