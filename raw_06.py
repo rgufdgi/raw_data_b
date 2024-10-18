@@ -130,30 +130,33 @@ def data_for_plot(value, step):
        return 0, 0
    
 def get_hhw(value, step):
-    x = step + int(len(value)/4)
+
+    maxx = 0
     lenn = int(len(value) / 4)
+    step2 = 0
     for i in range(lenn):
         num = u124(rverse(value[:4], 2), 2) 
-        if i == int(lenn/2):
-            y = num
-            break
+        if num >= maxx:
+            maxx = num
+            step2 = i
         value = value[4:]
-    return x, y
+    x = step + step2
+
+    return x, maxx
 
 
 
 start_time = datetime.now()  
 print(start_time) 
-T = []
-Y = []
-name = '/home/alex/baikal/files_10/time/n0068_10.0004_60'
-for i in range(23, 46):
+
+name = '/home/alex/baikal/files_13/new/n0075_13.0009_master'
+
+for i in range(9, 20):
+
     if i < 10:
-        data = pd.read_csv(f'{name[:42]}00{i}_60')
+        data = pd.read_csv(f'{name[:41]}00{i}_master', index_col=0)
     else:
-        data = pd.read_csv(f'{name[:42]}0{i}_60')
-        
-    #print(data)
+        data = pd.read_csv(f'{name[:41]}0{i}_master', index_col=0)
 
 
     values = list(data['values'])
@@ -167,17 +170,20 @@ for i in range(23, 46):
         y.append(b)
     data['y'] = y
     data['t'] = (t  + data['timet'] * 60 * 60 * 1000000000) / 1000 #мкс
+    print(data)
 
-    T.extend(t)
-    Y.extend(y)
-    # создание сетки 
-    #x = [i for i in range(1, 37)]
-    #y = [i for i in range(1, 10)]
-    #flux = np.array([x, y])
+
+   
+    data.to_csv(f'{name[:41]}00{i}_master2', index=False)
+
+        
+    print(i)
+
+
 
 
 # какая-то сортровка по амплитуде...
-    print(data['y'].mean())
+    #print(data['y'].mean())
 
 '''
     fig1 = plt.figure(figsize=(12, 7))
@@ -193,17 +199,18 @@ for i in range(23, 46):
     fig1.savefig(f'{name[:42]}0{i}_60.png')
 '''
 
+"""
 fig2 = plt.figure(figsize=(12, 7))
 fig2.suptitle('all')
 ax2 = fig2.add_subplot(111)
 #ax1.set_title('EXO 040830-7134.7, exptime=20s')
-ax2.set_xlabel('Time')
+ax2.set_xlabel('Время')
 ax2.set_ylabel('сигнал')
 plt.scatter(T, Y, color = 'black', s=5, marker='*')
 #plt.plot(data['t'], data['y'])
 fig2.savefig('10_all2.png')
 plt.show()
-
+"""
 
 
 

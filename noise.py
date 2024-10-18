@@ -12,8 +12,8 @@ import numpy as np
 
 
 def om(dataset): 
-    datafile = open('noises13_low.txt', 'a')
-    head = 'low\t'*12
+    datafile = open('noises13_q.txt', 'a')
+    head = 'low, mn, m, hn, n\t'*12
     datafile.write('вспышка лазера\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\n') 
     datafile.write(f'Секция {dataset["sdc"][0]} \t{head}\n')
     
@@ -26,20 +26,20 @@ def om(dataset):
         time1 = min(newset['t']) #начало
         time2 = max(newset['t']) #конец
         time1 = (4500000000 - time1)/1000000
-        time2 = (time2 - 7000000000)/1000000
+        time2 = (time2 - 5650000000)/1000000
         
         #отсечение для линейной аппроксимации фона
         filt_n1 = newset['t'] < 4500000000  # кусок в начале
         noise_set1 = newset.loc[filt_n1]
         t_noise1 = noise_set1['t']
-        y_noise1 = noise_set1['y']
+        y_noise1 = noise_set1['q']
         param1 = np.polyfit(t_noise1, y_noise1, 0)  #средняя амплитуда шума 1
         param1 = param1[0]
         
-        filt_n2 = newset['t'] > 7000000000 # кусок в конце
+        filt_n2 = newset['t'] > 5650000000 # кусок в конце
         noise_set2 = newset.loc[filt_n2]
         t_noise2 = noise_set2['t']
-        y_noise2 = noise_set2['y']
+        y_noise2 = noise_set2['q']
         param2 = np.polyfit(t_noise2, y_noise2, 0)  #средняя амплитуда шума 2
         param2 = param2[0]
         
@@ -49,15 +49,15 @@ def om(dataset):
         noise_max = param + HW #верхний край дорожки
         
         #количество событий в шумовых дорожках в секунду
-        filt1 = (noise_set1['y'] < noise_max)
-        filt2 = (noise_set2['y'] < noise_max) 
+        filt1 = (noise_set1['q'] < noise_max)
+        filt2 = (noise_set2['q'] < noise_max) 
         a = noise_set1.loc[filt1]
         b = noise_set2.loc[filt2] 
         
 
-        noise_events = (len(a['y'])/time1 + len(b['y'])/time2) / 2 # количество шумовых сигналов в секунду
+        noise_events = (len(a['q'])/time1 + len(b['y'])/time2) / 2 # количество шумовых сигналов в секунду
         # количество событий над шумовыми дорожками
-        all_events = (len(noise_set1['y'])/time1 + len(noise_set2['y'])/time2) / 2
+        all_events = (len(noise_set1['q'])/time1 + len(noise_set2['q'])/time2) / 2
         hight_noise_events = all_events - noise_events
         '''
         if i == 4:  #для рисования примера
@@ -99,18 +99,18 @@ def om(dataset):
             newset_left = newset[filt_left]
             filt_right = newset_left['t'] < laser[j][1]
             newset_right = newset_left.loc[filt_right]
-            filt_low = newset_right['y'] < noise_min
+            filt_low = newset_right['q'] < noise_min
             newset_low = newset_right.loc[filt_low]
             low = len(newset_low)
             #print(i, j, low)
             info_low.append(low)
            
-            '''
+            
             #события внутри
             time = (laser[j][1] - laser[j][0])/1000000
-            filt_not_low = newset_right['y'] > noise_min
+            filt_not_low = newset_right['q'] > noise_min
             newset_notlow = newset_right.loc[filt_not_low]
-            filt_not_low2 = newset_notlow['y'] < noise_max
+            filt_not_low2 = newset_notlow['q'] < noise_max
             newset_notlow = newset_notlow.loc[filt_not_low2]
             middle = len(newset_notlow)
             info_middle_n.append(middle)
@@ -118,15 +118,15 @@ def om(dataset):
             info_middle.append(middle)
             
             #события сверху
-            filt_hight = newset_right['y'] > noise_max
+            filt_hight = newset_right['q'] > noise_max
             newset_hight = newset_right.loc[filt_hight]
             hight = len(newset_hight)
             info_hight_n.append(hight)
             hight -= int(hight_noise_events*time)
             info_hight.append(hight)
-            '''
-            #omstr0 = f'{low} {info_middle_n[-1]} {middle} {info_hight_n[-1]} {hight}\t'
-            omstr0 = f'{low}\t'
+            
+            omstr0 = f'{low} {info_middle_n[-1]} {middle} {info_hight_n[-1]} {hight}\t'
+            #omstr0 = f'{low}\t'
             omstr += omstr0
             
 
@@ -138,13 +138,14 @@ start_time = datetime.now()
 print(start_time)         
 
 
-for i in range(207, 209):
+for i in range(208, 209):
     try:
-        section_data = pd.read_csv(f'/home/alex/baikal/files_13/next/sec_data{i}_13')  
+        section_data = pd.read_csv(f'/home/alex/baikal/files_13/new/sec_data{i}_13_1', index_col=0)  
     except:
+        print('!')
         continue
     
-    section_data.drop(columns=['Unnamed: 0.1', 'Unnamed: 0'], inplace=True)
+    #section_data.drop(columns=['Unnamed: 0.1', 'Unnamed: 0'], inplace=True)
     column_names = section_data.keys().tolist()
     print(column_names)
     om(section_data)

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 15 15:29:37 2024
+Created on Fri Oct 11 21:16:44 2024
 
 @author: alex
 """
-
-
+'''
+картинки для секций и модулей, но вместо максимума амплитуды -- сумма всех значений
+'''
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -118,10 +119,12 @@ def om(dataset, num):
         ax1 = fig1.add_subplot(111)
         #ax1.set_title(f'{num}, {i}')
         ax1.set_xlabel('время, мкс')
-        ax1.set_ylabel('сигнал АЦП')
-        plt.scatter(newset['t'], newset['y'], color = 'black', s=2, marker='*')
+        ax1.set_ylabel('q')
+        plt.yscale('log')
+        plt.scatter(newset['t'], newset['q'], color = 'crimson', s=2, marker='*')
+      
         #plt.show()
-        fig1.savefig(f'/home/alex/baikal/files_13/new/om/13_{num}_{i}OM.png')
+        fig1.savefig(f'/home/alex/baikal/files_13/new/om/q13_{num}_{i}OM.png')
         
 def section(dataset, num):
     fig1 = plt.figure()
@@ -131,14 +134,15 @@ def section(dataset, num):
     ax1 = fig1.add_subplot(111)
     #ax1.set_title(f'{num}, {i}')
     ax1.set_xlabel('время, мкс')
-    ax1.set_ylabel('сигнал АЦП')
+    ax1.set_ylabel('q')
     plt.grid(which='major')
     plt.grid(which='minor', linestyle=':')
     #plt.tight_layout()
-    plt.scatter(dataset['t'], dataset['y'], color = 'black', s=1, marker='*')
-    plt.yticks(np.arange(0, 50000, 1000.0))
+    plt.yscale('log')
+    plt.scatter(dataset['t'], dataset['q'], color = 'crimson', s=1, marker='*')
+    #plt.yticks(np.arange(0, 50000, 1000.0))
     #plt.show()
-    fig1.savefig(f'/home/alex/baikal/files_13/new/13_{num}_section.png')
+    fig1.savefig(f'/home/alex/baikal/files_10/new/q13_{num}_section.png')
 
 
 start_time = datetime.now()  
@@ -195,10 +199,10 @@ sec_data215 = pd.read_csv('/home/alex/baikal/files_13/new/sec_data215_13_1')
 #om(sec_data211, 211)
 #om(sec_data212, 212)
 #om(sec_data213, 213)
-om(sec_data214, 214)
-om(sec_data215, 215)
+#om(sec_data214, 214)
+#om(sec_data215, 215)
 
-'''
+
 section(sec_data192, 192)
 section(sec_data193, 193)
 section(sec_data194, 194)
@@ -223,7 +227,7 @@ section(sec_data212, 212)
 section(sec_data213, 213)
 section(sec_data214, 214)
 section(sec_data215, 215)
-'''
+
 
 
 

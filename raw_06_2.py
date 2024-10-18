@@ -144,9 +144,8 @@ def get_hhw(value, step):
 
 start_time = datetime.now()  
 print(start_time) 
-T = []
-Y = []
-name = '/home/alex/baikal/files_13/time/n0075_13.0004_60'
+
+name = '/home/alex/baikal/files_13/new/n0075_13.0009_master2'
 
 
 sec_data192 = pd.DataFrame()
@@ -205,55 +204,18 @@ sec_data216 = pd.read_csv('sec_data216')
 sec_data217 = pd.read_csv('sec_data217')
 sec_data218 = pd.read_csv('sec_data218')
 '''
-'''
-sec_data192.drop(columns=['Unnamed:'], inplace=True)
-sec_data193.drop(columns=['Unnamed:'], inplace=True)
-sec_data194.drop(columns=['Unnamed:'], inplace=True)
-sec_data195.drop(columns=['Unnamed:'], inplace=True)
-sec_data196.drop(columns=['Unnamed:'], inplace=True)
-sec_data197.drop(columns=['Unnamed:'], inplace=True)
-sec_data198.drop(columns=['Unnamed:'], inplace=True)
-sec_data199.drop(columns=['Unnamed:'], inplace=True)
-sec_data200.drop(columns=['Unnamed:'], inplace=True)
-sec_data201.drop(columns=['Unnamed:'], inplace=True)
-sec_data202.drop(columns=['Unnamed:'], inplace=True)
-sec_data203.drop(columns=['Unnamed:'], inplace=True)
-sec_data204.drop(columns=['Unnamed:'], inplace=True)
-sec_data205.drop(columns=['Unnamed:'], inplace=True)
-sec_data206.drop(columns=['Unnamed:'], inplace=True)
-sec_data207.drop(columns=['Unnamed:'], inplace=True)
-sec_data208.drop(columns=['Unnamed:'], inplace=True)
-sec_data209.drop(columns=['Unnamed:'], inplace=True)
-sec_data210.drop(columns=['Unnamed:'], inplace=True)
-sec_data211.drop(columns=['Unnamed:'], inplace=True)
-sec_data212.drop(columns=['Unnamed:'], inplace=True)
-sec_data213.drop(columns=['Unnamed:'], inplace=True)
-sec_data214.drop(columns=['Unnamed:'], inplace=True)
-sec_data215.drop(columns=['Unnamed:'], inplace=True)
-sec_data216.drop(columns=['Unnamed:'], inplace=True)
-sec_data217.drop(columns=['Unnamed:'], inplace=True)
-sec_data218.drop(columns=['Unnamed:'], inplace=True)
-'''
-for i in range(8, 21):
+
+for i in range(9, 14):
+    
+    data = pd.read_csv(f'{name[:41]}00{i}_master2', index_col=0)
+    '''
     if i < 10:
         data = pd.read_csv(f'{name[:42]}00{i}_60')
     else:
         data = pd.read_csv(f'{name[:42]}0{i}_60')
-        
-    #print(data)
+    '''    
 
 
-    values = list(data['values'])
-    step = list(data['step'])
-
-    t = []
-    y = []
-    for j in range(len(values)):
-        a, b = get_hhw(values[j], step[j])
-        t.append(a)
-        y.append(b)
-    data['y'] = y
-    data['t'] = (t  + data['timet'] * 60 * 60 * 1000000000) / 1000 #мкс
 
 # разделение по секциям
     filt1 = data['sdc'] == 192
@@ -342,34 +304,35 @@ for i in range(8, 21):
     #sec_data218 = pd.concat([sec_data218, data93], ignore_index=True)
         
 
+
  
-sec_data192.to_csv('sec_data192_13')   
-sec_data193.to_csv('sec_data193_13')  
-sec_data194.to_csv('sec_data194_13')  
-sec_data195.to_csv('sec_data195_13')    
-sec_data196.to_csv('sec_data196_13')  
-sec_data197.to_csv('sec_data197_13')  
-sec_data198.to_csv('sec_data198_13')    
-sec_data199.to_csv('sec_data199_13')  
-sec_data200.to_csv('sec_data200_13') 
-sec_data201.to_csv('sec_data201_13')    
-sec_data202.to_csv('sec_data202_13')  
-sec_data203.to_csv('sec_data203_13') 
-sec_data204.to_csv('sec_data204_13')    
-sec_data205.to_csv('sec_data205_13')  
-sec_data206.to_csv('sec_data206_13') 
-sec_data207.to_csv('sec_data207_13')  
-sec_data208.to_csv('sec_data208_13') 
-sec_data209.to_csv('sec_data209_13')  
-sec_data210.to_csv('sec_data210_13')  
-sec_data211.to_csv('sec_data211_13')  
-sec_data212.to_csv('sec_data212_13')  
-sec_data213.to_csv('sec_data213_13')  
-sec_data214.to_csv('sec_data214_13')  
-sec_data215.to_csv('sec_data215_13')  
-sec_data216.to_csv('sec_data216_13')  
-sec_data217.to_csv('sec_data217_13')  
-sec_data218.to_csv('sec_data218_13')      
+sec_data192.to_csv('/home/alex/baikal/files_13/new/sec_data192_13_1')   
+sec_data193.to_csv('/home/alex/baikal/files_13/new/sec_data193_13_1')  
+sec_data194.to_csv('/home/alex/baikal/files_13/new/sec_data194_13_1')  
+sec_data195.to_csv('/home/alex/baikal/files_13/new/sec_data195_13_1')    
+sec_data196.to_csv('/home/alex/baikal/files_13/new/sec_data196_13_1')  
+sec_data197.to_csv('/home/alex/baikal/files_13/new/sec_data197_13_1')  
+sec_data198.to_csv('/home/alex/baikal/files_13/new/sec_data198_13_1')    
+sec_data199.to_csv('/home/alex/baikal/files_13/new/sec_data199_13_1')  
+sec_data200.to_csv('/home/alex/baikal/files_13/new/sec_data200_13_1') 
+sec_data201.to_csv('/home/alex/baikal/files_13/new/sec_data201_13_1')    
+sec_data202.to_csv('/home/alex/baikal/files_13/new/sec_data202_13_1')  
+sec_data203.to_csv('/home/alex/baikal/files_13/new/sec_data203_13_1') 
+sec_data204.to_csv('/home/alex/baikal/files_13/new/sec_data204_13_1')    
+sec_data205.to_csv('/home/alex/baikal/files_13/new/sec_data205_13_1')  
+sec_data206.to_csv('/home/alex/baikal/files_13/new/sec_data206_13_1') 
+sec_data207.to_csv('/home/alex/baikal/files_13/new/sec_data207_13_1')  
+sec_data208.to_csv('/home/alex/baikal/files_13/new/sec_data208_13_1') 
+sec_data209.to_csv('/home/alex/baikal/files_13/new/sec_data209_13_1')  
+sec_data210.to_csv('/home/alex/baikal/files_13/new/sec_data210_13_1')  
+sec_data211.to_csv('/home/alex/baikal/files_13/new/sec_data211_13_1')  
+sec_data212.to_csv('/home/alex/baikal/files_13/new/sec_data212_13_1')  
+sec_data213.to_csv('/home/alex/baikal/files_13/new/sec_data213_13_1')  
+sec_data214.to_csv('/home/alex/baikal/files_13/new/sec_data214_13_1')  
+sec_data215.to_csv('/home/alex/baikal/files_13/new/sec_data215_13_1')  
+#sec_data216.to_csv('sec_data216_10_1')  
+#sec_data217.to_csv('sec_data217_10_1')  
+#sec_data218.to_csv('sec_data218_10_1')      
 print(sec_data197)
 
         

@@ -286,7 +286,7 @@ print(start_time)
         
         
 #имя файла          
-name = '/home/alex/baikal/files_13/n0075_13.0028'
+name = '/home/alex/baikal/files_13/n0075_13.0019'
 #заготовка списков для глобальной таблицы, в них считывается файл, по ним будет идти основной цикл
 gir_l = []
 rl_l = []
@@ -322,11 +322,13 @@ with open(name, 'rb') as file: #открытие файла, считывани�
             break
 
 # заготовка для мастерных записей (врем. кадры)
-dataset = {'time':[], 'timet':[], 'timel':[], 'sdc':[], 'om': [], 'n_filt': [], 'step':[],  'values':[], 'event_n':[], 'mask':[]}
+dataset = {'time':[], 'timet':[], 'sdc':[], 'om': [], 'step':[],  'values':[], 'event_n':[]}
 filt = [] # не знаю, насколько это нужно. 
 gist_data = {'time':[], 'timel':[], 'timet':[], 'sdc':[], 'hist':[]}
 
+#временно закомментирую это для работы, пока не надо
 #заготовки для остальных записей
+'''
 gir0 = {'pConfVersionMinor':[], 'pConfVersionMajor':[], 'pMinorVersion':[], 'pMajorVersion':[], 'NClust':[]}
 gir1 = {'ID':[], 'adress':[], 'stat':[], 'dinam':[]}
 gir4 = {1:[], 2:[], 4:[]}
@@ -336,7 +338,7 @@ gir7rf3 = {'Commutator':[], 'ChannelState':[]}
 gir7rf4 = {0:[]}
 gir7rf5 = {'Sensor':[], 'temp_data':[], 'hum_data':[], 'press_data':[], 'accel_data':[], 'mag_data':[]}
 gir3 = {'rf':[], 'rc':[]}
-
+'''
 
 counter = 0 # количество мастерных записей без данных (нулевые )
 counter2 = 0 # количество мастерных записей прошедших цикл в функции
@@ -364,16 +366,19 @@ for i in range(len(rc_l)): #основной цикл по всем запися
             continue
 
         dataset['om'].extend(dataset_i['om'])
-        dataset['n_filt'].extend(dataset_i['n_filt'])
+        #dataset['n_filt'].extend(dataset_i['n_filt'])
         dataset['step'].extend(dataset_i['step'])
         dataset['values'].extend(dataset_i['values'])
         dataset['timet'].extend(dataset_i['timet'])
-        dataset['timel'].extend(dataset_i['timel'])
+        #dataset['timel'].extend(dataset_i['timel'])
         dataset['sdc'].extend(dataset_i['sdc'])
         dataset['time'].extend(dataset_i['time'])
         dataset['event_n'].extend(dataset_i['event_n'])
-        dataset['mask'].extend(dataset_i['mask'])
-        
+        #dataset['mask'].extend(dataset_i['mask'])
+     
+    else:
+        continue
+''' временно закомментированно для работы
     elif gir_l[i] == 6 and rf_l[i] == 1:
 
         gist_data_i = read_rc_gist(rc_l[i], time_l[i])
@@ -599,17 +604,18 @@ for i in range(len(rc_l)): #основной цикл по всем запися
     elif gir_l[i] == 3:
         gir3['rf'].append(rf_l[i])
         gir3['rc'].append(rc_l[i])
-
+'''
 # большая таблица
-data0 = pd.DataFrame({'gir':gir_l, 'rl': rl_l, 'rf': rf_l, 'time': time_l, 'rc':rc_l })  
+#data0 = pd.DataFrame({'gir':gir_l, 'rl': rl_l, 'rf': rf_l, 'time': time_l, 'rc':rc_l })  
 
 # создание и запись в файлы мастерных данных
 data60 = pd.DataFrame(dataset)
-data60.to_csv(f'{name[:26]}/time/{name[26:]}_60')
-data61 = pd.DataFrame(gist_data)
+data60.to_csv(f'{name[:26]}/new/{name[26:]}_master')
+#data61 = pd.DataFrame(gist_data)
 #data61.to_csv(f'/home/alex/baikal/{name}_61')
 
 # создание и запись в файлы всего остального
+'''
 data1 = pd.DataFrame(gir1)
 data4 = pd.DataFrame(gir4)
 data71 = pd.DataFrame(gir7rf1)
@@ -618,6 +624,7 @@ data73 = pd.DataFrame(gir7rf3)
 data74 = pd.DataFrame(gir7rf4)
 data75 = pd.DataFrame(gir7rf5)
 data3 = pd.DataFrame(gir3)
+'''
 
 '''
 data1.to_csv(f'/home/alex/baikal/{name}_gir1')
@@ -629,20 +636,20 @@ data74.to_csv(f'/home/alex/baikal/{name}_74')
 data75.to_csv(f'/home/alex/baikal/{name}_75')
 data3.to_csv(f'/home/alex/baikal/{name}_gir3')
 '''
-
+'''
 filt2 = data0['rl'] >= 152 
 filt3 = data0['rl'] < 152 
 filt = data0['gir'] != 6
+'''
 #filt3 = data0['filt'] != 3009
-print(data0.loc[filt])
-print(data0.loc[filt2, 'rl'])
-print(data0.loc[filt3, 'rl'])
+#print(data0.loc[filt])
+#print(data0.loc[filt2, 'rl'])
+#print(data0.loc[filt3, 'rl'])
 #print(data0.loc[filt3])
 #print(data60.loc[filt, 'step'])
-print(data60)
-#print(data0['time'])
-print(counter)
-print(counter2)
+
+print(data60['time'])
+
 end_time = datetime.now()  # время окончания выполнения
 execution_time = end_time - start_time  # вычисляем время выполнения
 print(f"Время выполнения программы: {execution_time} ")
